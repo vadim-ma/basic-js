@@ -24,23 +24,27 @@ const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 function encryptDecrypt(message, key, encrypt, direct) {
   message = message.toUpperCase();
   key = key.toUpperCase();
+  
+  let index = 0;
   const newMessage = message
     .split('')
-    .map((symbol, index) => (encryptDecryptSymbol(symbol, index, key, encrypt)));
+    .map((symbol) => (encryptDecryptSymbol(symbol, key, encrypt)));
   if (direct) {
     return newMessage.join('');
   }
   return newMessage.reverse().join('');
-}
-function encryptDecryptSymbol(symbol, index, key, encrypt) {
-  const symbolIndex = alphabet.indexOf(symbol);
-  if (symbolIndex === -1) {
-    return symbol;
+  
+  function encryptDecryptSymbol(symbol, key, encrypt) {
+    const symbolIndex = alphabet.indexOf(symbol);
+    if (symbolIndex === -1) {
+      return symbol;
+    }
+    const keySymbol = key[index % key.length];
+    const keyIndex = alphabet.indexOf(keySymbol);
+    const encryptIndex = (symbolIndex + (encrypt ? 1 : -1) * keyIndex + alphabet.length) % alphabet.length;
+    index += 1;
+    return alphabet[encryptIndex];
   }
-  const keySymbol = key[index % key.length];
-  const keyIndex = alphabet.indexOf(keySymbol);
-  const encryptIndex = (symbolIndex + (encrypt ? 1 : -1) * keyIndex + alphabet.length) % alphabet.length;
-  return alphabet[encryptIndex];
 }
 
 class VigenereCipheringMachine {
