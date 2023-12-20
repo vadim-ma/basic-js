@@ -15,26 +15,24 @@ const { NotImplementedError } = require('../extensions/index.js');
  * the output should be ["file", "file(1)", "image", "file(1)(1)", "file(2)"]
  *
  */
-function getNewName(name, map){
-  const curCount = map.get(name) || 0;
-  if (curCount === 0) {
-    return name;
+function getNewName(name, set){
+  let newName = name;
+  let n = 1;
+  while (set.has(newName)) {
+    newName = `${name}(${n})`;
+    n += 1;
   }
-  let newName = `${name}(${curCount.toString()})`;
-  if (map.has(newName)) {
-    newName = getNewName(newName);
-  }
+
   return newName;
 }
 function renameFiles(names) {
-  throw new NotImplementedError('Not implemented');
-  // remove line with error and write your code here
+  // throw new NotImplementedError('Not implemented');
   
-  const map = new Map();
+  const set = new Set();
   return names
     .map((name) => {
-      const newName = getNewName(name, map);
-      map.set(newName, 1);
+      const newName = getNewName(name, set);
+      set.add(newName);
       return newName;
     });
 }
