@@ -27,6 +27,9 @@ function getNewName(name, map){
   return newName;
 }
 function renameFiles(names) {
+  throw new NotImplementedError('Not implemented');
+  // remove line with error and write your code here
+  
   const map = new Map();
   return names
     .map((name) => {
