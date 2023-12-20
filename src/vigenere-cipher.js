@@ -19,14 +19,45 @@ const { NotImplementedError } = require('../extensions/index.js');
  * reverseMachine.decrypt('AEIHQX SX DLLU!', 'alphonse') => '!NWAD TA KCATTA'
  * 
  */
-class VigenereCipheringMachine {
-  encrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+function encryptDecrypt(message, key, encrypt, direct) {
+  message = message.toUpperCase();
+  key = key.toUpperCase();
+  const newMessage = message
+    .split('')
+    .map((symbol, index) => (encryptDecryptSymbol(symbol, index, key, encrypt)));
+  if (direct) {
+    return newMessage.join('');
   }
-  decrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  return newMessage.reverse().join('');
+}
+function encryptDecryptSymbol(symbol, index, key, encrypt) {
+  const symbolIndex = alphabet.indexOf(symbol);
+  if (symbolIndex === -1) {
+    return symbol;
+  }
+  const keySymbol = key[index % key.length];
+  const keyIndex = alphabet.indexOf(keySymbol);
+  const encryptIndex = (symbolIndex + (encrypt ? 1 : -1) * keyIndex + alphabet.length) % alphabet.length;
+  return alphabet[encryptIndex];
+}
+
+class VigenereCipheringMachine {
+  constructor(direct = true) {
+    this.direct = direct;
+  }
+  encrypt(message, key) {
+    if (arguments.length < 2 || message === undefined || key === undefined) {
+      throw new Error('Incorrect arguments!');
+    }
+    return encryptDecrypt(message, key, true, this.direct);
+  }
+  decrypt(message, key) {
+    if (arguments.length < 2 || message === undefined || key === undefined) {
+      throw new Error('Incorrect arguments!');
+    }
+    return encryptDecrypt(message, key, false, this.direct);
   }
 }
 
